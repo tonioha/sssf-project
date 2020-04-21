@@ -1,11 +1,11 @@
 'use strict';
 
-const api = require('../utils/api');
+const leagueResult = require('../models/leagueResultSchema');
 
 const getMatches = async (req, res) => {
     try {
-        const data = await api.getLeagueMatches();
-        res.json(data);
+        const results = await leagueResult.find();
+        res.json(results);
     } catch (err) {
         res.status(500).json(e);
     }

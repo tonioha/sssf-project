@@ -1,6 +1,8 @@
 'use strict';
 
 const axios = require('axios');
+const dotaResult = require('../models/dotaResultSchema');
+const leagueResult = require('../models/leagueResultSchema');
 
 const LEAGUE_BASE_URL = `https://api.pandascore.co/lol/`;
 const CSGO_BASE_URL = `https://api.pandascore.co/csgo/`;
@@ -21,7 +23,8 @@ const getLeagueMatches = async () => {
         .catch(err => {
             console.log(err);
         });
-    return data;
+    saveLeagueResultsToDb(data);
+    // return data;
 };
 
 const getDotaMatches = async () => {
@@ -34,7 +37,32 @@ const getDotaMatches = async () => {
         .catch(err => {
             console.log(err);
         });
-    return data;
+    saveDotaResultsToDb(data);
+    // return data;
+};
+
+const saveDotaResultsToDb = async (data) => {
+    // console.log('winner', data[0][46].winner);
+    const dotaresults = await Promise.all(data[0].map(async rslt => {
+        let newDresult = new dotaResult(rslt);
+        const savedResult = await newDresult.save();
+        console.log(`Succesfully added result to db with id: ${savedResult._id}`)
+    }));
+    console.log('length ', dotaresults.length);
+    //const dotarslt = await dotaResult.create(data[0][0]);
+    //console.log(`Succesfully added result to db with id: ${dotarslt._id}`);
+};
+
+const saveLeagueResultsToDb = async (data) => {
+    // console.log('winner', data[0][46].winner);
+    const leagueresults = await Promise.all(data[0].map(async rslt => {
+        let newLresult = new leagueResult(rslt);
+        const savedResult = await newLresult.save();
+        console.log(`Succesfully added result to db with id: ${savedResult._id}`)
+    }));
+    console.log('length ', leagueresults.length);
+    //const dotarslt = await dotaResult.create(data[0][0]);
+    //console.log(`Succesfully added result to db with id: ${dotarslt._id}`);
 };
 
 

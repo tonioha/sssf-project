@@ -121,4 +121,4 @@ const resultSchema = new Schema({
     ]
 });
 
-module.exports = mongoose.model('DotaResult', resultSchema);
+module.exports = mongoose.model('LeagueResult', resultSchema);
