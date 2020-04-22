@@ -3,6 +3,8 @@
 const axios = require('axios');
 const dotaResult = require('../models/dotaResultSchema');
 const leagueResult = require('../models/leagueResultSchema');
+const csgoResult = require('../models/csgoResultSchema');
+const owResult = require('../models/owResultSchema');
 
 const LEAGUE_BASE_URL = `https://api.pandascore.co/lol/`;
 const CSGO_BASE_URL = `https://api.pandascore.co/csgo/`;
@@ -11,41 +13,102 @@ const OW_BASE_URL = `https://api.pandascore.co/ow/`;
 
 const API_KEY = process.env.API_TOKEN;
 
+
+const getDotaMatches = async () => {
+    let results = await dotaResult.find();
+    if(!results.length) {
+        await queryDotaMatches();
+        results = await dotaResult.find();
+    }
+    return results;
+};
+
 const getLeagueMatches = async () => {
+    let results = await leagueResult.find();
+    if(!results.length) {
+        await queryLeagueMatches();
+        results = await leagueResult.find();
+    }
+    return results;
+};
+
+const getCsgoMatches = async () => {
+    let results = await csgoResult.find();
+    if(!results.length) {
+        await queryCsgoMatches();
+        results = await csgoResult.find();
+    }
+    return results;
+};
+
+const getOwMatches = async () => {
+    let results = await owResult.find();
+    if(!results.length) {
+        await queryOwMatches();
+        results = await owResult.find();
+    }
+    return results;
+};
+
+const queryLeagueMatches = async () => {
     const URL = `${LEAGUE_BASE_URL}matches/?token=${API_KEY}`;
-    let data = [];
     await axios.get(URL)
         .then(res => {
             //console.log('res data: ', res.data);
             //console.log('res: ', res);
-            data.push(res.data);
+            //data.push(res.data);
+            saveLeagueResultsToDb(res.data);
         })
         .catch(err => {
             console.log(err);
         });
-    saveLeagueResultsToDb(data);
-    // return data;
 };
 
-const getDotaMatches = async () => {
+const queryDotaMatches = async () => {
     const URL = `${DOTA_BASE_URL}matches/?token=${API_KEY}`;
-    let data = [];
+    console.log('getting data');
     await axios.get(URL)
         .then(res => {
-            data.push(res.data);
+            saveDotaResultsToDb(res.data);
         })
         .catch(err => {
             console.log(err);
         });
-    saveDotaResultsToDb(data);
-    // return data;
+};
+
+const queryCsgoMatches = async () => {
+    const URL = `${CSGO_BASE_URL}matches/?token=${API_KEY}`;
+    await axios.get(URL)
+        .then(res => {
+            saveCsgoResultsToDb(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+const queryOwMatches = async () => {
+    const URL = `${OW_BASE_URL}matches/?token=${API_KEY}`;
+    await axios.get(URL)
+        .then(res => {
+            saveOwResultsToDb(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 };
 
 const saveDotaResultsToDb = async (data) => {
     // console.log('winner', data[0][46].winner);
-    const dotaresults = await Promise.all(data[0].map(async rslt => {
+    console.log('here dota');
+    const dotaresults = await Promise.all(data.map(async rslt => {
         let newDresult = new dotaResult(rslt);
-        const savedResult = await newDresult.save();
+        const filter = {id: newDresult.id};
+        // console.log('newDresult id: ', newDresult.id);
+        const savedResult = await dotaResult.findOneAndUpdate(filter, rslt, {
+            new: true,
+            upsert: true
+        });
         console.log(`Succesfully added result to db with id: ${savedResult._id}`)
     }));
     console.log('length ', dotaresults.length);
@@ -54,20 +117,49 @@ const saveDotaResultsToDb = async (data) => {
 };
 
 const saveLeagueResultsToDb = async (data) => {
-    // console.log('winner', data[0][46].winner);
-    const leagueresults = await Promise.all(data[0].map(async rslt => {
+    const leagueresults = await Promise.all(data.map(async rslt => {
         let newLresult = new leagueResult(rslt);
-        const savedResult = await newLresult.save();
+        const filter = {id: newLresult.id};
+        const savedResult = await leagueResult.findOneAndUpdate(filter, rslt, {
+            new: true,
+            upsert: true
+        });
         console.log(`Succesfully added result to db with id: ${savedResult._id}`)
     }));
     console.log('length ', leagueresults.length);
-    //const dotarslt = await dotaResult.create(data[0][0]);
-    //console.log(`Succesfully added result to db with id: ${dotarslt._id}`);
+};
+
+const saveCsgoResultsToDb = async (data) => {
+    const csresults = await Promise.all(data.map(async rslt => {
+        let newCSresult = new csgoResult(rslt);
+        const filter = {id: newCSresult.id};
+        const savedResult = await csgoResult.findOneAndUpdate(filter, rslt, {
+            new: true,
+            upsert: true
+        });
+        console.log(`Succesfully added result to db with id: ${savedResult._id}`)
+    }));
+    console.log('length ', csresults.length);
+};
+
+const saveOwResultsToDb = async (data) => {
+    const owresults = await Promise.all(data.map(async rslt => {
+        let newOWresult = new owResult(rslt);
+        const filter = {id: newOWresult.id};
+        const savedResult = await owResult.findOneAndUpdate(filter, rslt, {
+            new: true,
+            upsert: true
+        });
+        console.log(`Succesfully added result to db with id: ${savedResult._id}`)
+    }));
+    console.log('length ', owresults.length);
 };
 
 
 module.exports = {
     getLeagueMatches,
     getDotaMatches,
+    getCsgoMatches,
+    getOwMatches,
 
 };

@@ -1,10 +1,10 @@
 'use strict';
 
-const dotaResult = require('../models/dotaResultSchema');
+const api = require('../utils/api');
 
 const getMatches = async (req, res) => {
     try {
-        const results = await dotaResult.find();
+        const results = await api.getDotaMatches();
         res.json(results);
     } catch (err) {
         res.status(500).json(e);
