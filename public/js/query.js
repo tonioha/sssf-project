@@ -66,12 +66,11 @@ const Results = (data) => {
         if (i % 3 === 0) {
             console.log('diviä');
             main.innerHTML += `${i > 0 ? '</div>' : ''}
-            <div class="w3-row-padding">
             `;
 
         }
         main.innerHTML += `
-            <div class="w3-third w3-container w3-margin-bottom">
+            <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom" onclick="showDetailed(${data[i].id})">
                 <div class="w3-container w3-white">
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'null'}</p>
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'null'}</p>
@@ -80,4 +79,9 @@ const Results = (data) => {
         `;
     }
     main.innerHTML += `</div>`;
+};
+
+const showDetailed = (id) => {
+    console.log('aaa');
+    console.log(id);
 };
