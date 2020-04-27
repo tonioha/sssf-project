@@ -70,7 +70,7 @@ const Results = (data) => {
 
         }
         main.innerHTML += `
-            <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom" onclick="showDetailed(${data[i].id})">
+            <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom ${data[i].videogame.name}" onclick="showDetailed(this)">
                 <div class="w3-container w3-white">
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'null'}</p>
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'null'}</p>
@@ -81,7 +81,12 @@ const Results = (data) => {
     main.innerHTML += `</div>`;
 };
 
-const showDetailed = (id) => {
-    console.log('aaa');
-    console.log(id);
+const showDetailed = async (e) => {
+    const game = (e.attributes.class.value).toLowerCase();
+    const id = parseInt(e.attributes.id.value);
+
+    console.log('match clicked');
+    if (game.includes('lol')) {
+        window.open(`http://localhost:3000/lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+    }
 };
