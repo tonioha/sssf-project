@@ -161,5 +161,4 @@ module.exports = {
     getDotaMatches,
     getCsgoMatches,
     getOwMatches,
-
 };

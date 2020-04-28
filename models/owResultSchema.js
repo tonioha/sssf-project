@@ -4,15 +4,11 @@ const Schema = mongoose.Schema;
 
 const resultSchema = new Schema({
     begin_at: Date,
-    detailed_stats: Boolean,
     draw: Boolean,
     end_at: {type: Date, default: null},
     forfeit: Boolean,
-    game_advantage: {type: Boolean, default: null},
     id: Number,
     league_id: Number,
-    live_embed_url: {type: String, default: null},
-    live_url: {type: String, default: null},
     match_type: String,
     modified_at: Date,
     name: String,
@@ -41,7 +37,6 @@ const resultSchema = new Schema({
     games: [
         {
             begin_at: {type: Date, default: null},
-            detailed_stats: Boolean,
             end_at: {type: Date, default: null},
             finished: Boolean,
             forfeit: Boolean,
@@ -50,7 +45,6 @@ const resultSchema = new Schema({
             match_id: Number,
             position: Number,
             status: String,
-            video_url: {type: String, default: null},
             winner: {
                 id: {type: Number, default: null},
                 type: {type: String, default: null}
@@ -64,11 +58,6 @@ const resultSchema = new Schema({
         modified_at: Date,
         name: String,
         slug: String,
-        url: {type: String, default: null}
-    },
-    live: {
-        opens_at: {type: Date, default: null},
-        supported: Boolean,
         url: {type: String, default: null}
     },
     serie: {
@@ -91,7 +80,6 @@ const resultSchema = new Schema({
         end_at: {type: Date, default: null},
         id: Number,
         league_id: Number,
-        live_supported: Boolean,
         modified_at: Date,
         name: String,
         prizepool: String,

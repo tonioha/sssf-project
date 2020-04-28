@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const graphqlHTTP = require('express-graphql');
+const MyGraphQLSchema = require('./schema/schema');
 const bodyParser = require('body-parser');
 const db = require('./utils/db');
 const leagueRoute = require('./routes/leagueRoute');
@@ -23,6 +25,13 @@ app.use('/lol', leagueRoute);
 app.use('/dota', dotaRoute);
 app.use('/csgo', csgoRoute);
 app.use('/ow', owRoute);
+
+app.use('/graphql', (req, res) => {
+   graphqlHTTP({
+       schema: MyGraphQLSchema,
+       graphiql: true
+   })(req, res);
+});
 
 /*
 app.use('/', (req, res) => {
