@@ -367,7 +367,7 @@ const Mutation = new GraphQLObjectType({
     fields: () => ({
         addMatch: {
             type: resultType,
-            description: 'Add match',
+            description: 'Add match or update an existing match',
             args: {
                 id: {type: new GraphQLNonNull(GraphQLID)},
                 begin_at: {type: new GraphQLNonNull(GraphQLString)},
@@ -422,6 +422,33 @@ const Mutation = new GraphQLObjectType({
                         });
                     } else {
                         throw new Error('Bad videogame name');
+                    }
+                } catch (err) {
+                    throw new Error(err);
+                }
+            }
+        },
+        deleteMatch: {
+            type: resultType,
+            description: 'Delete a match from database. Provide match id and game category (lol, dota-2, overwatch, or cs:go)',
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLID)},
+                game: {type: new GraphQLNonNull(GraphQLString)}
+            },
+            resolve: async (parent, args) => {
+                try {
+                    const game = args.game.toLowerCase();
+                    const filter = {id: args.id}
+                    if (game.includes('lol')) {
+                        return await league.findOneAndDelete(filter);
+                    } else if (game.includes('dota-2')) {
+                        return await dota.findOneAndDelete(filter);
+                    } else if (game.includes('cs:go')) {
+                        return await csgo.findOneAndDelete(filter);
+                    } else if (game.includes('overwatch')) {
+                        return await ow.findOneAndDelete(filter);
+                    } else {
+                        throw new Error('Bad videogame gategory');
                     }
                 } catch (err) {
                     throw new Error(err);
