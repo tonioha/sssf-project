@@ -11,6 +11,7 @@ const leagueRoute = require('./routes/leagueRoute');
 const dotaRoute = require('./routes/dotaRoute');
 const csgoRoute = require('./routes/csgoRoute');
 const owRoute = require('./routes/owRoute');
+const passport = require('./utils/pass');
 
 
 const app = express();
@@ -29,7 +30,8 @@ app.use('/ow', owRoute);
 app.use('/graphql', (req, res) => {
    graphqlHTTP({
        schema: MyGraphQLSchema,
-       graphiql: true
+       graphiql: true,
+       context: {req, res}
    })(req, res);
 });
 

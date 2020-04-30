@@ -19,62 +19,22 @@
     <header id="portfolio">
         <div class="w3-container">
             <h1><b>Esports matches & results</b></h1>
-            <div class="w3-section w3-bottombar w3-padding-16">
-                <span class="w3-margin-right">Filter:</span>
-                <button class="w3-button w3-black">League of Legends</button>
-                <button class="w3-button w3-white"><i class="fa fa-diamond w3-margin-right"></i>Dota 2</button>
-                <button class="w3-button w3-white w3-hide-small"><i class="fa fa-photo w3-margin-right"></i>Counter-Strike: Global Offensive</button>
-                <button class="w3-button w3-white w3-hide-small"><i class="fa fa-map-pin w3-margin-right"></i>Overwatch</button>
+            <div id="buttonit" class="w3-section w3-bottombar w3-padding-16">
+                <span class="w3-margin-right">Category:</span>
+                <button id="league" class="btn active" onclick="showLeagueResults()">League of Legends</button>
+                <button id="dota" class="btn" onclick="showDotaResults()">Dota 2</button>
+                <button id="csgo" class="btn" onclick="showCsResults()">Counter-Strike: Global Offensive</button>
+                <button id="ow" class="btn" onclick="showOwResults()">Overwatch</button>
             </div>
         </div>
     </header>
 
-    <!-- First Photo Grid-->
-    <div class="w3-row-padding">
-        <div class="w3-third w3-container w3-margin-bottom">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum 111</p>
-            </div>
-        </div>
-        <div class="w3-third w3-container w3-margin-bottom">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum 222</p>
-            </div>
-        </div>
-        <div class="w3-third w3-container">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum 333</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Second Photo Grid-->
-    <div class="w3-row-padding">
-        <div class="w3-third w3-container w3-margin-bottom">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum</p>
-            </div>
-        </div>
-        <div class="w3-third w3-container w3-margin-bottom">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum</p>
-            </div>
-        </div>
-        <div class="w3-third w3-container">
-            <div class="w3-container w3-white">
-                <p><b>Lorem Ipsum</b></p>
-                <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum</p>
-            </div>
-        </div>
+    <div id="matchgrid">
     </div>
 
 </div>
 
 <script src="./js/query.js"></script>
+<script src="./js/buttons.js"></script>
 </body>
 </html>

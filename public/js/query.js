@@ -2,75 +2,36 @@
 
 let data = [];
 let xmlhttp = new XMLHttpRequest();
-let url = 'http://localhost:3000/lol';
+let url = 'http://localhost:3000/';
 let ul = document.querySelector('ul');
-let main = document.getElementById('main');
+let main = document.getElementById('matchgrid');
+let leagueBtn = document.getElementById('league');
+let dotaBtn = document.getElementById('dota');
+let csgoBtn = document.getElementById('csgo');
+let owBtn = document.getElementById('ow');
 
+
+console.log(leagueBtn);
 xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         data = JSON.parse(xmlhttp.responseText);
         //console.log('dataa: ', data);
-        Results(data);
+        displayResults(data);
     }
 };
-xmlhttp.open('GET', url, true);
+xmlhttp.open('GET', url+'lol', true);
 xmlhttp.send();
 
+
 const displayResults = (data) => {
-
-        for (let i = 0; i < data.length; i++) {
-            console.log('opponents:', data[i].opponents[0]);
-
-            let divi = document.createElement('div');
-            divi.className = 'w3-row-padding';
-
-            let divi2 = document.createElement('div');
-            divi2.className = 'w3-third w3-container w3-margin-bottom';
-            let divi3 = document.createElement('div');
-            divi3.className = 'w3-container w3-white';
-
-            let team1 = document.createElement('p');
-            let team2 = document.createElement('p');
-            team1.innerText = (data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'null';
-            team2.innerText = (data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'null';
-
-            divi3.appendChild(team1);
-            divi3.appendChild(team2);
-
-            divi2.appendChild(divi3);
-
-            divi.appendChild(divi2);
-
-            main.appendChild(divi);
-        }
-};
-
-/*
-const displayResults = (data) => {
-    for (const result of data) {
-        //console.log('wiineri', result.winner);
-        ul.innerHTML += `
-        <li>
-            <h3>${result.name}</h3>
-            <p>Winner: ${(result.winner !== null) ? result.winner.name : 'null'}</p>
-            <p>Date: ${new Date(result.begin_at)}</p>
-            <p>Tournament: ${result.league.name}</p>
-        </li>
-        `;
-    }
-};
- */
-
-const Results = (data) => {
     for (let i = 0; i < data.length; i++) {
         if (i % 3 === 0) {
-            console.log('diviä');
             main.innerHTML += `${i > 0 ? '</div>' : ''}
             `;
 
         }
         main.innerHTML += `
-            <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom ${data[i].videogame.name}" onclick="showDetailed(this)">
+            <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom ${data[i].videogame.name} match" onclick="showDetailed(this)">
                 <div class="w3-container w3-white">
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'null'}</p>
                     <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'null'}</p>
@@ -88,5 +49,49 @@ const showDetailed = async (e) => {
     console.log('match clicked');
     if (game.includes('lol')) {
         window.open(`http://localhost:3000/lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+    } else if (game.includes('dota 2')) {
+        window.open(`http://localhost:3000/dota/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+    } else if (game.includes('cs:go')) {
+        window.open(`http://localhost:3000/csgo/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+    } else if (game.includes('overwatch')) {
+        window.open(`http://localhost:3000/ow/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     }
 };
+
+const clearMatches = () => {
+  while (main.firstChild) {
+      main.firstChild.remove();
+  }
+};
+
+const showLeagueResults = async () => {
+    clearMatches();
+    const resp = await fetch(url+'lol');
+    const data = await resp.json();
+    displayResults(data);
+};
+
+const showDotaResults = async () => {
+    clearMatches();
+    const resp = await fetch(url+'dota');
+    const data = await resp.json();
+    displayResults(data);
+};
+
+const showCsResults = async () => {
+    clearMatches();
+    const resp = await fetch(url+'csgo');
+    const data = await resp.json();
+    displayResults(data);
+};
+
+const showOwResults = async () => {
+    clearMatches();
+    const resp = await fetch(url+'ow');
+    const data = await resp.json();
+    displayResults(data);
+};
+
+
+
+

@@ -12,11 +12,16 @@ const {
 
 } = require('graphql');
 
+const authController = require('../controllers/authController');
 
 const csgo = require('../models/csgoResultSchema');
 const league = require('../models/leagueResultSchema');
 const dota = require('../models/dotaResultSchema');
 const ow = require('../models/owResultSchema');
+const user = require('../models/userSchema');
+
+const bcrypt = require('bcrypt');
+const saltRound = 12;
 
 const resultType = new GraphQLObjectType({
    name: 'resulttype',
@@ -164,6 +169,15 @@ const opponentType = new GraphQLObjectType({
         name: {type: GraphQLString},
         slug: {type: GraphQLString}
     })
+});
+
+const userType = new GraphQLObjectType({
+    name: 'user',
+    fields: () => ({
+        id: {type: GraphQLID},
+        username: {type: GraphQLString},
+        token: {type: GraphQLString}
+    }),
 });
 
 const InputVideogameversionType = new GraphQLInputObjectType({
@@ -357,7 +371,28 @@ const RootQuery = new GraphQLObjectType({
                return ow.find();
            },
        },
-
+       login: {
+           type: userType,
+           description: 'Login with username and password to receive token.',
+           args: {
+               username: {type: new GraphQLNonNull(GraphQLString)},
+               password: {type: new GraphQLNonNull(GraphQLString)},
+           },
+           resolve: async (parent, args, {req, res}) => {
+               req.body = args; // inject args to request body for passport
+               try {
+                   const authResponse = await authController.login(req, res);
+                   return {
+                       id: authResponse.user._id,
+                       ...authResponse.user,
+                       token: authResponse.token,
+                   };
+               }
+               catch (err) {
+                   throw new Error(err);
+               }
+           },
+       },
    }
 });
 
@@ -396,8 +431,9 @@ const Mutation = new GraphQLObjectType({
                 videogame: {type: new GraphQLNonNull(InputVideogameType)},
                 opponents: {type: new GraphQLList(InputOpponentType)}
             },
-            resolve: async (parent, args) => {
+            resolve: async (parent, args, {req, res}) => {
                 try {
+                    await authController.checkAuth(req, res);
                     const game = args.videogame.name.toLowerCase();
                     const filter = {id: args.id};
                     if (game.includes('lol')) {
@@ -421,7 +457,7 @@ const Mutation = new GraphQLObjectType({
                             upsert: true
                         });
                     } else {
-                        throw new Error('Bad videogame name');
+                        throw new Error('Bad videogame category');
                     }
                 } catch (err) {
                     throw new Error(err);
@@ -435,8 +471,9 @@ const Mutation = new GraphQLObjectType({
                 id: {type: new GraphQLNonNull(GraphQLID)},
                 game: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve: async (parent, args) => {
+            resolve: async (parent, args, {req, res}) => {
                 try {
+                    await authController.checkAuth(req, res);
                     const game = args.game.toLowerCase();
                     const filter = {id: args.id}
                     if (game.includes('lol')) {
@@ -448,9 +485,45 @@ const Mutation = new GraphQLObjectType({
                     } else if (game.includes('overwatch')) {
                         return await ow.findOneAndDelete(filter);
                     } else {
-                        throw new Error('Bad videogame gategory');
+                        throw new Error('Bad videogame category');
                     }
                 } catch (err) {
+                    throw new Error(err);
+                }
+            }
+        },
+        registerUser: {
+            type: userType,
+            description: 'Register user.',
+            args: {
+                username: {type: new GraphQLNonNull(GraphQLString)},
+                password: {type: new GraphQLNonNull(GraphQLString)}
+            },
+            resolve: async (parent, args, {req, res}) => {
+                try {
+                    const hash = await bcrypt.hash(args.password, saltRound);
+                    const userWithHash = {
+                        username: args.username,
+                        password: hash
+                    };
+                    const newUser = new user(userWithHash);
+                    const result = await newUser.save();
+                    if (result !== null) {
+                        // automatic login
+                        req.body = args; // inject args to request body for passport
+                        console.log('args:', args);
+                        const authResponse = await authController.login(req, res);
+                        console.log('ar', authResponse);
+                        return {
+                            id: authResponse.user._id,
+                            ...authResponse.user,
+                            token: authResponse.token,
+                        };
+                    } else {
+                        throw new Error('insert fail');
+                    }
+                }
+                catch (err) {
                     throw new Error(err);
                 }
             }
