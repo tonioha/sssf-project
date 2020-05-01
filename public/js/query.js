@@ -3,19 +3,12 @@
 let data = [];
 let xmlhttp = new XMLHttpRequest();
 let url = 'http://localhost:3000/';
-let ul = document.querySelector('ul');
 let main = document.getElementById('matchgrid');
-let leagueBtn = document.getElementById('league');
-let dotaBtn = document.getElementById('dota');
-let csgoBtn = document.getElementById('csgo');
-let owBtn = document.getElementById('ow');
 
 
-console.log(leagueBtn);
 xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         data = JSON.parse(xmlhttp.responseText);
-        //console.log('dataa: ', data);
         displayResults(data);
     }
 };
@@ -33,8 +26,8 @@ const displayResults = (data) => {
         main.innerHTML += `
             <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom ${data[i].videogame.name} match" onclick="showDetailed(this)">
                 <div class="w3-container w3-white">
-                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'null'}</p>
-                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'null'}</p>
+                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'TBA'}</p>
+                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'TBA'}</p>
                 </div>
             </div>
         `;
@@ -46,15 +39,14 @@ const showDetailed = async (e) => {
     const game = (e.attributes.class.value).toLowerCase();
     const id = parseInt(e.attributes.id.value);
 
-    console.log('match clicked');
     if (game.includes('lol')) {
-        window.open(`http://localhost:3000/lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${url}lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('dota 2')) {
-        window.open(`http://localhost:3000/dota/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${url}dota/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('cs:go')) {
-        window.open(`http://localhost:3000/csgo/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${url}csgo/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('overwatch')) {
-        window.open(`http://localhost:3000/ow/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${url}ow/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     }
 };
 

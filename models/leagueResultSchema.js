@@ -101,7 +101,7 @@ const resultSchema = new Schema({
                 image_url: {type: String, default: null},
                 location: {type: String, default: null},
                 modified_at: {type: Date, default: null},
-                name: {type: String, default: null},
+                name: {type: String, default: 'TBA'},
                 slug: {type: String, default: null}
             },
             type: {type: String, default: null}
