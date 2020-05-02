@@ -26,12 +26,12 @@ const showResult = (data) => {
         home.innerText = data.opponents[0].opponent.name;
         homepic.src = data.opponents[0].opponent.image_url;
     }
-    if (data.opponents.length > 0 && data.opponents[1].opponent) {
+    if (data.opponents.length > 1 && data.opponents[1].opponent) {
         away.innerText = data.opponents[1].opponent.name;
         awaypic.src = data.opponents[1].opponent.image_url;
     }
     bestof.innerText = `Best of ${data.number_of_games}`;
-    if (data.games.length > 0 && data.opponents.length > 0) {
+    if (data.games.length > 0 && data.opponents.length > 1) {
         addScores(data);
     }
     const pvm = new Date(data.begin_at);
