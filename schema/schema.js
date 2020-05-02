@@ -24,35 +24,43 @@ const bcrypt = require('bcrypt');
 const saltRound = 12;
 
 const resultType = new GraphQLObjectType({
-   name: 'resulttype',
-   fields: () => ({
-       id: {type: GraphQLID},
-       begin_at: {type: GraphQLString},
-       draw: {type: GraphQLBoolean},
-       end_at: {type: GraphQLString, defaultValue: 'null'},
-       forfeit: {type: GraphQLBoolean},
-       league_id: {type: GraphQLInt},
-       match_type: {type: GraphQLString},
-       modified_at: {type: GraphQLString},
-       name: {type: GraphQLString},
-       number_of_games: {type: GraphQLInt},
-       original_scheduled_at: {type: GraphQLString},
-       rescheduled: {type: GraphQLBoolean},
-       scheduled_at: {type: GraphQLString},
-       serie_id: {type: GraphQLInt},
-       slug: {type: GraphQLString},
-       status: {type: GraphQLString},
-       tournament_id: {type: GraphQLInt},
-       videogame_version: {type: videogameversionType},
-       winner: {type: winnerType},
-       winner_id: {type: GraphQLInt},
-       games: {type: new GraphQLList(gamesType)},
-       league: {type: leagueResultType},
-       serie: {type: serieType},
-       tournament: {type: tournamentType},
-       videogame: {type: videogameType},
-       opponents: {type: new GraphQLList(opponentType)}
-   })
+    name: 'resulttype',
+    fields: () => ({
+        id: {type: GraphQLID},
+        begin_at: {type: GraphQLString},
+        draw: {type: GraphQLBoolean},
+        end_at: {type: GraphQLString, defaultValue: 'null'},
+        forfeit: {type: GraphQLBoolean},
+        league_id: {type: GraphQLInt},
+        match_type: {type: GraphQLString},
+        modified_at: {type: GraphQLString},
+        name: {type: GraphQLString},
+        number_of_games: {type: GraphQLInt},
+        original_scheduled_at: {type: GraphQLString},
+        rescheduled: {type: GraphQLBoolean},
+        scheduled_at: {type: GraphQLString},
+        serie_id: {type: GraphQLInt},
+        slug: {type: GraphQLString},
+        status: {type: GraphQLString},
+        tournament_id: {type: GraphQLInt},
+        videogame_version: {type: videogameversionType},
+        winner: {type: winnerType},
+        winner_id: {type: GraphQLInt},
+        games: {type: new GraphQLList(gamesType)},
+        league: {type: leagueResultType},
+        serie: {type: serieType},
+        tournament: {type: tournamentType},
+        videogame: {type: videogameType},
+        opponents: {type: new GraphQLList(opponentsType)}
+    })
+});
+
+const opponentsType = new GraphQLObjectType({
+    name: 'opponentstype',
+    fields: () => ({
+        type: {type: GraphQLString},
+        opponent: {type: opponentType}
+    })
 });
 
 const videogameversionType = new GraphQLObjectType({
@@ -77,40 +85,40 @@ const winnerType = new GraphQLObjectType({
 });
 
 const gamesType = new GraphQLObjectType({
-   name: 'gamestype',
-   fields: () => ({
-       begin_at: {type: GraphQLString},
-       end_at: {type: GraphQLString},
-       finished: {type: GraphQLBoolean},
-       forfeit: {type: GraphQLBoolean},
-       id: {type: GraphQLID},
-       length: {type: GraphQLInt},
-       match_id: {type: GraphQLInt},
-       position: {type: GraphQLInt},
-       status: {type: GraphQLString},
-       winner: {type: gamewinnerType},
-       winner_type: {type: GraphQLString}
-   })
+    name: 'gamestype',
+    fields: () => ({
+        begin_at: {type: GraphQLString},
+        end_at: {type: GraphQLString},
+        finished: {type: GraphQLBoolean},
+        forfeit: {type: GraphQLBoolean},
+        id: {type: GraphQLID},
+        length: {type: GraphQLInt},
+        match_id: {type: GraphQLInt},
+        position: {type: GraphQLInt},
+        status: {type: GraphQLString},
+        winner: {type: gamewinnerType},
+        winner_type: {type: GraphQLString}
+    })
 });
 
 const gamewinnerType = new GraphQLObjectType({
-   name: 'gamewinnertype',
-   fields: () => ({
-       id: {type: GraphQLID},
-       type: {type: GraphQLString}
-   })
+    name: 'gamewinnertype',
+    fields: () => ({
+        id: {type: GraphQLID},
+        type: {type: GraphQLString}
+    })
 });
 
 const leagueResultType = new GraphQLObjectType({
-   name: 'leaguetype',
-   fields: () => ({
-       id: {type: GraphQLID},
-       image_url: {type: GraphQLString},
-       modified_at: {type: GraphQLString},
-       name: {type: GraphQLString},
-       slug: {type: GraphQLString},
-       url: {type: GraphQLString}
-   })
+    name: 'leaguetype',
+    fields: () => ({
+        id: {type: GraphQLID},
+        image_url: {type: GraphQLString},
+        modified_at: {type: GraphQLString},
+        name: {type: GraphQLString},
+        slug: {type: GraphQLString},
+        url: {type: GraphQLString}
+    })
 });
 
 const serieType = new GraphQLObjectType({
@@ -133,20 +141,20 @@ const serieType = new GraphQLObjectType({
 });
 
 const tournamentType = new GraphQLObjectType({
-   name: 'tournamenttype',
-   fields: () => ({
-       begin_at: {type: GraphQLString},
-       end_at: {type: GraphQLString},
-       id: {type: GraphQLID},
-       league_id: {type: GraphQLInt},
-       modified_at: {type: GraphQLString},
-       name: {type: GraphQLString},
-       prizepool: {type: GraphQLString},
-       serie_id: {type: GraphQLInt},
-       slug: {type: GraphQLString},
-       winner_in: {type: GraphQLInt},
-       winner_type: {type: GraphQLString}
-   })
+    name: 'tournamenttype',
+    fields: () => ({
+        begin_at: {type: GraphQLString},
+        end_at: {type: GraphQLString},
+        id: {type: GraphQLID},
+        league_id: {type: GraphQLInt},
+        modified_at: {type: GraphQLString},
+        name: {type: GraphQLString},
+        prizepool: {type: GraphQLString},
+        serie_id: {type: GraphQLInt},
+        slug: {type: GraphQLString},
+        winner_in: {type: GraphQLInt},
+        winner_type: {type: GraphQLString}
+    })
 });
 
 const videogameType = new GraphQLObjectType({
@@ -157,6 +165,7 @@ const videogameType = new GraphQLObjectType({
         slug: {type: GraphQLString}
     })
 });
+
 
 const opponentType = new GraphQLObjectType({
     name: 'opponentype',
@@ -297,143 +306,214 @@ const InputOpponentType = new GraphQLInputObjectType({
 });
 
 const RootQuery = new GraphQLObjectType({
-   name: 'RootQueryType',
-   fields: {
-       leaguematch: {
-           type: resultType,
-           description: 'Get League of Legends match by id',
-           args: {id: {type: GraphQLID}},
-           resolve(parent, args) {
-               return league.findOne({id: parseInt(args.id)});
-           },
-       },
-       leaguematches: {
-           type: new GraphQLList(resultType),
-           description: 'Get all League of Legends matches',
-           args: {
-               serie_id: {type: GraphQLInt},
-               tournament_id: {type: GraphQLInt},
-               winner_id: {type: GraphQLInt},
-               league_id: {type: GraphQLInt},
-               team_id: {type: GraphQLInt}
-           },
-           resolve: (parent, args) => {
-               let query = {};
-               if (args.serie_id) { query.serie_id = args.serie_id;}
-               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
-               if (args.winner_id) {query.winner_id = args.winner_id;}
-               if (args.league_id) {query.league_id = args.league_id;}
-               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
-               return league.find(query);
-           },
-       },
-       dotamatch: {
-           type: resultType,
-           description: 'Get Dota 2 match by id',
-           args: {id: {type: GraphQLID}},
-           resolve(parent, args) {
-               return dota.findOne({id: parseInt(args.id)});
-           },
-       },
-       dotamatches: {
-           type: new GraphQLList(resultType),
-           description: 'Get all Dota 2 matches',
-           args: {
-               serie_id: {type: GraphQLInt},
-               tournament_id: {type: GraphQLInt},
-               winner_id: {type: GraphQLInt},
-               league_id: {type: GraphQLInt},
-               team_id: {type: GraphQLInt}
-           },
-           resolve: (parent, args) => {
-               let query = {};
-               if (args.serie_id) { query.serie_id = args.serie_id;}
-               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
-               if (args.winner_id) {query.winner_id = args.winner_id;}
-               if (args.league_id) {query.league_id = args.league_id;}
-               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
-               return dota.find(query);
-           },
-       },
-       csgomatch: {
-           type: resultType,
-           description: 'Get CS:GO match by id',
-           args: {id: {type: GraphQLID}},
-           resolve(parent, args) {
-               return csgo.findOne({id: parseInt(args.id)});
-           },
-       },
-       csgomatches: {
-           type: new GraphQLList(resultType),
-           description: 'Get all CS:GO matches',
-           args: {
-               serie_id: {type: GraphQLInt},
-               tournament_id: {type: GraphQLInt},
-               winner_id: {type: GraphQLInt},
-               league_id: {type: GraphQLInt},
-               team_id: {type: GraphQLInt}
-           },
-           resolve: (parent, args) => {
-               let query = {};
-               if (args.serie_id) { query.serie_id = args.serie_id;}
-               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
-               if (args.winner_id) {query.winner_id = args.winner_id;}
-               if (args.league_id) {query.league_id = args.league_id;}
-               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
-               return csgo.find(query);
-           },
-       },
-       owmatch: {
-           type: resultType,
-           description: 'Get Overwatch match by id',
-           args: {id: {type: GraphQLID}},
-           resolve(parent, args) {
-               return ow.findOne({id: parseInt(args.id)});
-           },
-       },
-       owmatches: {
-           type: new GraphQLList(resultType),
-           description: 'Get all Overwatch matches',
-           args: {
-               serie_id: {type: GraphQLInt},
-               tournament_id: {type: GraphQLInt},
-               winner_id: {type: GraphQLInt},
-               league_id: {type: GraphQLInt},
-               team_id: {type: GraphQLInt}
-           },
-           resolve: (parent, args) => {
-               let query = {};
-               if (args.serie_id) { query.serie_id = args.serie_id;}
-               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
-               if (args.winner_id) {query.winner_id = args.winner_id;}
-               if (args.league_id) {query.league_id = args.league_id;}
-               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
-               return ow.find(query);
-           },
-       },
-       login: {
-           type: userType,
-           description: 'Login with username and password to receive token.',
-           args: {
-               username: {type: new GraphQLNonNull(GraphQLString)},
-               password: {type: new GraphQLNonNull(GraphQLString)},
-           },
-           resolve: async (parent, args, {req, res}) => {
-               req.body = args; // inject args to request body for passport
-               try {
-                   const authResponse = await authController.login(req, res);
-                   return {
-                       id: authResponse.user._id,
-                       ...authResponse.user,
-                       token: authResponse.token,
-                   };
-               }
-               catch (err) {
-                   throw new Error(err);
-               }
-           },
-       },
-   }
+    name: 'RootQueryType',
+    fields: {
+        leaguematch: {
+            type: resultType,
+            description: 'Get League of Legends match by id',
+            args: {id: {type: GraphQLID}},
+            resolve: async (parent, args) => {
+                try {
+                    return await league.findOne({id: parseInt(args.id)});
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        leaguematches: {
+            type: new GraphQLList(resultType),
+            description: 'Get all League of Legends matches',
+            args: {
+                serie_id: {type: GraphQLInt},
+                tournament_id: {type: GraphQLInt},
+                winner_id: {type: GraphQLInt},
+                league_id: {type: GraphQLInt},
+                team_id: {type: GraphQLInt}
+            },
+            resolve: async (parent, args) => {
+                try {
+                    let query = {};
+                    if (args.serie_id) {
+                        query.serie_id = args.serie_id;
+                    }
+                    if (args.tournament_id) {
+                        query.tournament_id = args.tournament_id;
+                    }
+                    if (args.winner_id) {
+                        query.winner_id = args.winner_id;
+                    }
+                    if (args.league_id) {
+                        query.league_id = args.league_id;
+                    }
+                    if (args.team_id) {
+                        query['opponents.opponent.id'] = args.team_id;
+                    }
+                    return await league.find(query);
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        dotamatch: {
+            type: resultType,
+            description: 'Get Dota 2 match by id',
+            args: {id: {type: GraphQLID}},
+            resolve: async (parent, args) => {
+                try {
+                    return await dota.findOne({id: parseInt(args.id)});
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        dotamatches: {
+            type: new GraphQLList(resultType),
+            description: 'Get all Dota 2 matches',
+            args: {
+                serie_id: {type: GraphQLInt},
+                tournament_id: {type: GraphQLInt},
+                winner_id: {type: GraphQLInt},
+                league_id: {type: GraphQLInt},
+                team_id: {type: GraphQLInt}
+            },
+            resolve: async (parent, args) => {
+                try {
+                    let query = {};
+                    if (args.serie_id) {
+                        query.serie_id = args.serie_id;
+                    }
+                    if (args.tournament_id) {
+                        query.tournament_id = args.tournament_id;
+                    }
+                    if (args.winner_id) {
+                        query.winner_id = args.winner_id;
+                    }
+                    if (args.league_id) {
+                        query.league_id = args.league_id;
+                    }
+                    if (args.team_id) {
+                        query['opponents.opponent.id'] = args.team_id;
+                    }
+                    return await dota.find(query);
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        csgomatch: {
+            type: resultType,
+            description: 'Get CS:GO match by id',
+            args: {id: {type: GraphQLID}},
+            resolve: async (parent, args) => {
+                try {
+                    return await csgo.findOne({id: parseInt(args.id)});
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        csgomatches: {
+            type: new GraphQLList(resultType),
+            description: 'Get all CS:GO matches',
+            args: {
+                serie_id: {type: GraphQLInt},
+                tournament_id: {type: GraphQLInt},
+                winner_id: {type: GraphQLInt},
+                league_id: {type: GraphQLInt},
+                team_id: {type: GraphQLInt}
+            },
+            resolve: async (parent, args) => {
+                try {
+                    let query = {};
+                    if (args.serie_id) {
+                        query.serie_id = args.serie_id;
+                    }
+                    if (args.tournament_id) {
+                        query.tournament_id = args.tournament_id;
+                    }
+                    if (args.winner_id) {
+                        query.winner_id = args.winner_id;
+                    }
+                    if (args.league_id) {
+                        query.league_id = args.league_id;
+                    }
+                    if (args.team_id) {
+                        query['opponents.opponent.id'] = args.team_id;
+                    }
+                    return await csgo.find(query);
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        owmatch: {
+            type: resultType,
+            description: 'Get Overwatch match by id',
+            args: {id: {type: GraphQLID}},
+            resolve: async (parent, args) => {
+                try {
+                    return await ow.findOne({id: parseInt(args.id)});
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        owmatches: {
+            type: new GraphQLList(resultType),
+            description: 'Get all Overwatch matches',
+            args: {
+                serie_id: {type: GraphQLInt},
+                tournament_id: {type: GraphQLInt},
+                winner_id: {type: GraphQLInt},
+                league_id: {type: GraphQLInt},
+                team_id: {type: GraphQLInt}
+            },
+            resolve: async (parent, args) => {
+                try {
+                    let query = {};
+                    if (args.serie_id) {
+                        query.serie_id = args.serie_id;
+                    }
+                    if (args.tournament_id) {
+                        query.tournament_id = args.tournament_id;
+                    }
+                    if (args.winner_id) {
+                        query.winner_id = args.winner_id;
+                    }
+                    if (args.league_id) {
+                        query.league_id = args.league_id;
+                    }
+                    if (args.team_id) {
+                        query['opponents.opponent.id'] = args.team_id;
+                    }
+                    return await ow.find(query);
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+        login: {
+            type: userType,
+            description: 'Login with username and password to receive token.',
+            args: {
+                username: {type: new GraphQLNonNull(GraphQLString)},
+                password: {type: new GraphQLNonNull(GraphQLString)},
+            },
+            resolve: async (parent, args, {req, res}) => {
+                req.body = args; // inject args to request body for passport
+                try {
+                    const authResponse = await authController.login(req, res);
+                    return {
+                        id: authResponse.user._id,
+                        ...authResponse.user,
+                        token: authResponse.token,
+                    };
+                } catch (err) {
+                    throw new Error(err);
+                }
+            },
+        },
+    }
 });
 
 
@@ -562,8 +642,7 @@ const Mutation = new GraphQLObjectType({
                     } else {
                         throw new Error('insert fail');
                     }
-                }
-                catch (err) {
+                } catch (err) {
                     throw new Error(err);
                 }
             }
@@ -571,9 +650,7 @@ const Mutation = new GraphQLObjectType({
     })
 });
 
-
-
 module.exports = new GraphQLSchema({
-   query: RootQuery,
+    query: RootQuery,
     mutation: Mutation
 });
