@@ -311,10 +311,20 @@ const RootQuery = new GraphQLObjectType({
            type: new GraphQLList(resultType),
            description: 'Get all League of Legends matches',
            args: {
-               // TODO: Queries with args
+               serie_id: {type: GraphQLInt},
+               tournament_id: {type: GraphQLInt},
+               winner_id: {type: GraphQLInt},
+               league_id: {type: GraphQLInt},
+               team_id: {type: GraphQLInt}
            },
            resolve: (parent, args) => {
-               return league.find();
+               let query = {};
+               if (args.serie_id) { query.serie_id = args.serie_id;}
+               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
+               if (args.winner_id) {query.winner_id = args.winner_id;}
+               if (args.league_id) {query.league_id = args.league_id;}
+               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
+               return league.find(query);
            },
        },
        dotamatch: {
@@ -329,10 +339,20 @@ const RootQuery = new GraphQLObjectType({
            type: new GraphQLList(resultType),
            description: 'Get all Dota 2 matches',
            args: {
-               // TODO: Queries with args
+               serie_id: {type: GraphQLInt},
+               tournament_id: {type: GraphQLInt},
+               winner_id: {type: GraphQLInt},
+               league_id: {type: GraphQLInt},
+               team_id: {type: GraphQLInt}
            },
            resolve: (parent, args) => {
-               return dota.find();
+               let query = {};
+               if (args.serie_id) { query.serie_id = args.serie_id;}
+               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
+               if (args.winner_id) {query.winner_id = args.winner_id;}
+               if (args.league_id) {query.league_id = args.league_id;}
+               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
+               return dota.find(query);
            },
        },
        csgomatch: {
@@ -347,10 +367,20 @@ const RootQuery = new GraphQLObjectType({
            type: new GraphQLList(resultType),
            description: 'Get all CS:GO matches',
            args: {
-               // TODO: Queries with args
+               serie_id: {type: GraphQLInt},
+               tournament_id: {type: GraphQLInt},
+               winner_id: {type: GraphQLInt},
+               league_id: {type: GraphQLInt},
+               team_id: {type: GraphQLInt}
            },
            resolve: (parent, args) => {
-               return csgo.find();
+               let query = {};
+               if (args.serie_id) { query.serie_id = args.serie_id;}
+               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
+               if (args.winner_id) {query.winner_id = args.winner_id;}
+               if (args.league_id) {query.league_id = args.league_id;}
+               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
+               return csgo.find(query);
            },
        },
        owmatch: {
@@ -365,10 +395,20 @@ const RootQuery = new GraphQLObjectType({
            type: new GraphQLList(resultType),
            description: 'Get all Overwatch matches',
            args: {
-               // TODO: Queries with args
+               serie_id: {type: GraphQLInt},
+               tournament_id: {type: GraphQLInt},
+               winner_id: {type: GraphQLInt},
+               league_id: {type: GraphQLInt},
+               team_id: {type: GraphQLInt}
            },
            resolve: (parent, args) => {
-               return ow.find();
+               let query = {};
+               if (args.serie_id) { query.serie_id = args.serie_id;}
+               if (args.tournament_id) {query.tournament_id = args.tournament_id;}
+               if (args.winner_id) {query.winner_id = args.winner_id;}
+               if (args.league_id) {query.league_id = args.league_id;}
+               if (args.team_id) {query['opponents.opponent.id'] = args.team_id;}
+               return ow.find(query);
            },
        },
        login: {

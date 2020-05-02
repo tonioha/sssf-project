@@ -2,6 +2,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const MyGraphQLSchema = require('./schema/schema');
@@ -13,14 +14,13 @@ const csgoRoute = require('./routes/csgoRoute');
 const owRoute = require('./routes/owRoute');
 const passport = require('./utils/pass');
 
-
 const app = express();
 
+app.use(helmet());
 app.use(express.static('public'));
 app.use(cors());
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
-
 
 app.use('/lol', leagueRoute);
 app.use('/dota', dotaRoute);
@@ -34,12 +34,6 @@ app.use('/graphql', (req, res) => {
        context: {req, res}
    })(req, res);
 });
-
-/*
-app.use('/', (req, res) => {
-    res.send('My page');
-});
- */
 
 db.on('connected', () => {
     app.listen(3000, () => {
