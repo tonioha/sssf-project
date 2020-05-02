@@ -2,7 +2,7 @@
 
 let data = [];
 let xmlhttp = new XMLHttpRequest();
-let url = 'http://localhost:3000/';
+let url = 'http://env-3595870.jelastic.metropolia.fi/';
 let main = document.getElementById('matchgrid');
 
 

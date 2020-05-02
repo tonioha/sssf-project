@@ -5,9 +5,15 @@ const leagueResult = require('../models/leagueResultSchema');
 
 const getMatches = async (req, res) => {
     try {
-        //console.log('got request', req);
-        const results = await api.getLeagueMatches();
-        res.json(results);
+        let results;
+        if (req.query.team_id) {
+            const id = parseInt(req.query.team_id);
+            results = await leagueResult.find({"opponents.opponent.id": id});
+            await res.json(results);
+        } else {
+            results = await api.getLeagueMatches();
+            await res.json(results);
+        }
     } catch (err) {
         res.status(500).json(err.message);
     }

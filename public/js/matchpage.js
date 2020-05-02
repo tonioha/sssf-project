@@ -53,3 +53,4 @@ const addScores = (data) => {
     }
     score.innerText = `${homeScore} - ${awayScore}`;
 };
+

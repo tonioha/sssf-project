@@ -1,6 +1,14 @@
+body {
+    font: normal 18px Raleway;
+    background-color: #f1f1f1 !important;
+}
 .main {
     margin:auto;
     width: 60%;
+}
+.container {
+    display: flex;
+    flex-flow: column nowrap;
 }
 .hometeam {
     flex: 1;
@@ -21,6 +29,10 @@
     flex: 1;
     display: flex;
     flex-flow: column nowrap;
+}
+.result {
+    font-size: 25px;
+    font-weight: bold;
 }
 img {
     border: 1px solid black;
