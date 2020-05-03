@@ -181,7 +181,8 @@ const showResult = (data) => {
         addScores(data);
     }
     const pvm = new Date(parseInt(data.begin_at));
-    date.innerText = `${pvm.getDate()}.${pvm.getMonth()+1}.${pvm.getFullYear()}`;
+    let dateString = (pvm instanceof Date && isFinite(pvm)) ? `${pvm.getDate()}.${pvm.getMonth()+1}.${pvm.getFullYear()}` : 'Date not available';
+    date.innerText = `${dateString}`;
 };
 
 const addScores = (data) => {

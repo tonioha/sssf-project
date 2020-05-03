@@ -9,6 +9,7 @@ const lolQuery = {
 {
   leaguematches {
     id
+    begin_at
     opponents {
       opponent {
         name
@@ -36,6 +37,8 @@ xmlhttp.send(JSON.stringify(lolQuery));
 
 const displayResults = (data) => {
     for (let i = 0; i < data.length; i++) {
+        const pvm = new Date(parseInt(data[i].begin_at));
+        const date = (pvm instanceof Date && isFinite(pvm)) ? `${pvm.getDate()}.${pvm.getMonth()+1}.${pvm.getFullYear()}` : 'Date not available';
         if (i % 3 === 0) {
             main.innerHTML += `${i > 0 ? '</div>' : ''}
             `;
@@ -44,8 +47,9 @@ const displayResults = (data) => {
         main.innerHTML += `
             <div id="${data[i].id}" class="w3-third w3-container w3-margin-bottom ${data[i].videogame.name} match" onclick="showDetailed(this)">
                 <div class="w3-container w3-white">
-                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'TBA'}</p>
-                    <p>${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'TBA'}</p>
+                    <div class="opphome">${(data[i].opponents !== 'undefined' && data[i].opponents[0] !== undefined) ? data[i].opponents[0].opponent.name : 'TBA'}</div>
+                    <div class="date">${date}</div>
+                    <div class="oppaway">${(data[i].opponents !== 'undefined' && data[i].opponents[1] !== undefined) ? data[i].opponents[1].opponent.name : 'TBA'}</div>                
                 </div>
             </div>
         `;
@@ -81,7 +85,6 @@ const showLeagueResults = async () => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(lolQuery)
     });
-    console.log('resp', resp);
     const leagueData = await resp.json();
     displayResults(leagueData.data.leaguematches);
 };
@@ -93,6 +96,7 @@ const showDotaResults = async () => {
         {
     dotamatches {
         id
+        begin_at
         opponents {
         opponent {
             name
@@ -120,6 +124,7 @@ const showCsResults = async () => {
         {
     csgomatches {
         id
+        begin_at
         opponents {
         opponent {
             name
@@ -147,6 +152,7 @@ const showOwResults = async () => {
         {
     owmatches {
         id
+        begin_at
         opponents {
         opponent {
             name
