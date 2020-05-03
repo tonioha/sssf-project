@@ -2,18 +2,36 @@
 
 let data = [];
 let xmlhttp = new XMLHttpRequest();
-let url = 'https://env-3595870.jelastic.metropolia.fi/';
+let url = 'http://localhost:3000/';
 let main = document.getElementById('matchgrid');
+const lolQuery = {
+    query: `
+{
+  leaguematches {
+    id
+    opponents {
+      opponent {
+        name
+      }
+    }
+    videogame {
+      name
+    }
+  }
+}
+    `
+};
 
 
 xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         data = JSON.parse(xmlhttp.responseText);
-        displayResults(data);
+        displayResults(data.data.leaguematches);
     }
 };
-xmlhttp.open('GET', url+'lol', true);
-xmlhttp.send();
+xmlhttp.open('POST', url + 'graphql', true);
+xmlhttp.setRequestHeader('Content-Type', 'application/json');
+xmlhttp.send(JSON.stringify(lolQuery));
 
 
 const displayResults = (data) => {
@@ -51,37 +69,102 @@ const showDetailed = async (e) => {
 };
 
 const clearMatches = () => {
-  while (main.firstChild) {
-      main.firstChild.remove();
-  }
+    while (main.firstChild) {
+        main.firstChild.remove();
+    }
 };
 
 const showLeagueResults = async () => {
     clearMatches();
-    const resp = await fetch(url+'lol');
-    const data = await resp.json();
-    displayResults(data);
+    const resp = await fetch(url + 'graphql', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(lolQuery)
+    });
+    console.log('resp', resp);
+    const leagueData = await resp.json();
+    displayResults(leagueData.data.leaguematches);
 };
 
 const showDotaResults = async () => {
     clearMatches();
-    const resp = await fetch(url+'dota');
-    const data = await resp.json();
-    displayResults(data);
+    const dotaQuery = {
+        query: `
+        {
+    dotamatches {
+        id
+        opponents {
+        opponent {
+            name
+        }
+    }
+        videogame {
+        name
+            }
+        }
+    }
+    `};
+    const resp = await fetch(url + 'graphql', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(dotaQuery)
+    });
+    const dotaData = await resp.json();
+    displayResults(dotaData.data.dotamatches);
 };
 
 const showCsResults = async () => {
     clearMatches();
-    const resp = await fetch(url+'csgo');
-    const data = await resp.json();
-    displayResults(data);
+    const csgoQuery = {
+        query: `
+        {
+    csgomatches {
+        id
+        opponents {
+        opponent {
+            name
+        }
+    }
+        videogame {
+        name
+            }
+        }
+    }
+    `};
+    const resp = await fetch(url + 'graphql', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(csgoQuery)
+    });
+    const csData = await resp.json();
+    displayResults(csData.data.csgomatches);
 };
 
 const showOwResults = async () => {
     clearMatches();
-    const resp = await fetch(url+'ow');
-    const data = await resp.json();
-    displayResults(data);
+    const owQuery = {
+        query: `
+        {
+    owmatches {
+        id
+        opponents {
+        opponent {
+            name
+        }
+    }
+        videogame {
+        name
+            }
+        }
+    }
+    `};
+    const resp = await fetch(url + 'graphql', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(owQuery)
+    });
+    const owData = await resp.json();
+    displayResults(owData.data.owmatches);
 };
 
 
