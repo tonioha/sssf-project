@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/w3.css">
+<link rel="stylesheet" href="./css/modal.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -20,21 +21,44 @@
         <div class="w3-container">
             <h1><b>Esports matches & results</b></h1>
             <div id="buttonit" class="w3-section w3-bottombar w3-padding-16">
-                <span class="w3-margin-right">Category:</span>
                 <button id="league" class="btn active" onclick="showLeagueResults()">League of Legends</button>
                 <button id="dota" class="btn" onclick="showDotaResults()">Dota 2</button>
                 <button id="csgo" class="btn" onclick="showCsResults()">Counter-Strike: Global Offensive</button>
                 <button id="ow" class="btn" onclick="showOwResults()">Overwatch</button>
+                <button id="loginbutton" class="loginbtn" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
             </div>
         </div>
     </header>
-
     <div id="matchgrid">
+    </div>
+
+    <!-- Login Modal https://www.w3schools.com/howto/howto_css_login_form.asp -->
+    <div id="id01" class="modal">
+
+        <div class="modal-content animate">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+            </div>
+
+            <div class="container">
+                <form id="login">
+                <label for="uname"><b>Username</b></label>
+                <input id="uname" type="text" placeholder="Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input id="psw" type="password" placeholder="Password" name="psw" required>
+
+                <button class="submitbtn" type="submit">Login</button>
+                </form>
+            </div>
+        </div>
     </div>
 
 </div>
 
+
 <script src="./js/query.js"></script>
 <script src="./js/buttons.js"></script>
+<script src="./js/login.js"></script>
 </body>
 </html>

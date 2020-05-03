@@ -173,6 +173,12 @@ const showOwResults = async () => {
     displayResults(owData.data.owmatches);
 };
 
+window.onload = () => {
+    const token = localStorage.getItem('token');
+    if (token !== null) {
+        document.getElementById('loginbutton').style.display = 'none';
+    }
+};
 
 
 

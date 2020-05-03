@@ -522,7 +522,7 @@ const Mutation = new GraphQLObjectType({
     fields: () => ({
         addMatch: {
             type: resultType,
-            description: 'Add match or update an existing match',
+            description: 'Add match',
             args: {
                 id: {type: new GraphQLNonNull(GraphQLID)},
                 begin_at: {type: new GraphQLNonNull(GraphQLString)},
@@ -584,9 +584,69 @@ const Mutation = new GraphQLObjectType({
                 }
             }
         },
+        modifyMatch: {
+            type: resultType,
+            description: 'Update an existing match',
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLID)},
+                begin_at: {type: GraphQLString},
+                draw: {type: GraphQLBoolean},
+                end_at: {type: GraphQLString},
+                forfeit: {type: GraphQLBoolean},
+                league_id: {type: GraphQLInt},
+                match_type: {type: GraphQLString},
+                modified_at: {type: GraphQLString},
+                name: {type: GraphQLString},
+                number_of_games: {type: GraphQLInt},
+                original_scheduled_at: {type: GraphQLString},
+                rescheduled: {type: GraphQLBoolean},
+                scheduled_at: {type: GraphQLString},
+                serie_id: {type: GraphQLInt},
+                slug: {type: GraphQLString},
+                status: {type: GraphQLString},
+                tournament_id: {type: GraphQLInt},
+                videogame_version: {type: InputVideogameversionType},
+                winner: {type: InputWinnerType},
+                winner_id: {type: GraphQLInt},
+                games: {type: new GraphQLList(InputGamesType)},
+                league: {type: InputLeagueResultType},
+                serie: {type: InputSerieType},
+                tournament: {type: InputTournamentType},
+                videogame: {type: new GraphQLNonNull(InputVideogameType)},
+                opponents: {type: InputOpponentType}
+            },
+            resolve: async (parent, args, {req, res}) => {
+                try {
+                    await authController.checkAuth(req, res);
+                    const game = args.videogame.name.toLowerCase();
+                    const filter = {id: args.id};
+                    if (game.includes('lol')) {
+                        return await league.findOneAndUpdate(filter, args, {
+                            new: true
+                        });
+                    } else if (game.includes('dota 2')) {
+                        return await dota.findOneAndUpdate(filter, args, {
+                            new: true
+                        });
+                    } else if (game.includes('cs:go')) {
+                        return await csgo.findOneAndUpdate(filter, args, {
+                            new: true
+                        });
+                    } else if (game.includes('overwatch')) {
+                        return await ow.findOneAndUpdate(filter, args, {
+                            new: true
+                        });
+                    } else {
+                        throw new Error('Bad videogame category');
+                    }
+                } catch (err) {
+                    throw new Error(err);
+                }
+            }
+        },
         deleteMatch: {
             type: resultType,
-            description: 'Delete a match from database. Provide match id and game category (lol, dota-2, overwatch, or cs:go)',
+            description: 'Delete a match from database. Provide match id and game category (lol, dota 2, overwatch, or cs:go)',
             args: {
                 id: {type: new GraphQLNonNull(GraphQLID)},
                 game: {type: new GraphQLNonNull(GraphQLString)}
