@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="/../css/mutation.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Match mutations</title>
+</head>
+<body>
+
+<div class="main">
+<form id="editform">
+    <label for="games">Game:</label><br>
+    <select id="games" name="gamelist" form="editform">
+        <option value="lol">League</option>
+        <option value="dota 2">Dota2</option>
+        <option value="cs:go">CS:GO</option>
+        <option value="overwatch">Overwatch</option>
+    </select>
+    <br>
+    <label for="matchids">Match id:</label><br>
+    <select id="matchids" name="idlist" form="editform">
+    </select>
+    <br>
+    <label for="matchname">Match name:</label><br>
+    <input type="text" id="matchname" name="matchname" value=""><br>
+    <label for="opponenthomename">Home opponent name:</label><br>
+    <input type="text" id="opponenthomename" name="opponenthomename" value=""><br>
+    <label for="opponenthomeid">Home opponent id:</label><br>
+    <input type="text" id="opponenthomeid" name="opponenthomeid" value=""><br>
+    <label for="opponentawayname">Away opponent name:</label><br>
+    <input type="text" id="opponentawayname" name="opponentawayname" value=""><br>
+    <label for="opponentawayid">Away opponent id:</label><br>
+    <input type="text" id="opponentawayid" name="opponentawayid" value=""><br>
+    <input id="submitbtn" type="submit" value="Modify">
+    <input id="deletebtn" type="submit" value="Delete">
+</form>
+</div>
+
+</body>
+<script src="/../js/mutation.js"></script>
+</html>

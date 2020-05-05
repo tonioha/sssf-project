@@ -5,9 +5,8 @@ const usernameField = document.getElementById('uname');
 const passwordField = document.getElementById('psw');
 const submitBtn = document.querySelector('.submitbtn');
 const loginBtn = document.getElementById('loginbutton');
-const qUrl = 'http://localhost:3000/graphql';
+const qUrl = 'https://env-3595870.jelastic.metropolia.fi/graphql';
 
-console.log(submitBtn);
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
@@ -37,7 +36,6 @@ submitBtn.addEventListener("click", async (e) => {
    const respJson = await resp.json();
 
    if (respJson.data.login !== null) {
-       console.log('hoh');
        window.localStorage.setItem('token', respJson.data.login.token);
        usernameField.value = '';
        passwordField.value = '';

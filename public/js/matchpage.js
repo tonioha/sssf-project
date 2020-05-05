@@ -1,7 +1,7 @@
 'use strict';
 
 const url = location.pathname;
-const qUrl = 'http://localhost:3000/graphql';
+const qUrl = 'https://env-3595870.jelastic.metropolia.fi/graphql';
 const home = document.querySelector('.home');
 const away = document.querySelector('.away');
 const homepic = document.querySelector('.homepic');

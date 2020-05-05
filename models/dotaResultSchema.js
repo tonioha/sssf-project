@@ -97,7 +97,7 @@ const resultSchema = new Schema({
         {
             opponent: {
                 acronym: {type: String, default: null},
-                id: {type: Number, default: null},
+                id: {type: Number, default: 0},
                 image_url: {type: String, default: null},
                 location: {type: String, default: null},
                 modified_at: {type: Date, default: null},
