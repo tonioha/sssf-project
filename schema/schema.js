@@ -654,7 +654,7 @@ const Mutation = new GraphQLObjectType({
             },
             resolve: async (parent, args, {req, res}) => {
                 try {
-                    // await authController.checkAuth(req, res);
+                    await authController.checkAuth(req, res);
                     const game = args.videogame.name.toLowerCase();
                     const filter = {id: args.id};
                     if (game.includes('lol')) {
