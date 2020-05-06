@@ -12,8 +12,7 @@ Clone repository https://github.com/tonioha/sssf-project.git
 Install dependencies
 ```npm install```
 
-Make sure you have an environment file (.env)
-Example of .env file
+Make sure you have an environment file (.env)<br/>Example of .env file
 ```
 DB_URL=mongodb://testUser:password@localhost/results
 JWT_TOKEN=your_token_here
