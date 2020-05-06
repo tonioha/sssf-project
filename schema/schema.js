@@ -227,35 +227,6 @@ const InputGamesType = new GraphQLInputObjectType({
     })
 });
 
-const modifyGames = (doc) => {
-    const newHomeId = doc.opponents[0].opponent.id;
-    const newAwayId = doc.opponents[1].opponent.id;
-    const oldHomeId = doc.found.opponents[0].opponent.id;
-    const oldAwayId = doc.found.opponents[1].opponent.id;
-
-    if (doc.opponents && doc.found.games) {
-        for (let i = 0; i < doc.found.games.length; i++) {
-            if (doc.found.games[i].winner.id === oldHomeId) {
-                doc.found.games[i].winner.id = newHomeId;
-            }
-            if (doc.found.games[i].winner.id === oldAwayId) {
-                doc.found.games[i].winner.id = newAwayId;
-            }
-        }
-    }
-
-    try {
-        doc.found.opponents[0].opponent.id = doc.opponents[0].opponent.id;
-        doc.found.opponents[0].opponent.name = doc.opponents[0].opponent.name;
-        doc.found.opponents[1].opponent.id = doc.opponents[1].opponent.id;
-        doc.found.opponents[1].opponent.name = doc.opponents[1].opponent.name;
-        doc.found.name = doc.name;
-    } catch (err) {
-        console.log(err);
-    }
-    return doc.found;
-};
-
 const InputGamewinnerType = new GraphQLInputObjectType({
     name: 'InputGamewinnertype',
     fields: () => ({
@@ -562,11 +533,11 @@ const Mutation = new GraphQLObjectType({
             description: 'Add match',
             args: {
                 id: {type: new GraphQLNonNull(GraphQLID)},
-                begin_at: {type: new GraphQLNonNull(GraphQLString)},
+                begin_at: {type: GraphQLString},
                 draw: {type: GraphQLBoolean},
                 end_at: {type: GraphQLString},
                 forfeit: {type: GraphQLBoolean},
-                league_id: {type: new GraphQLNonNull(GraphQLInt)},
+                league_id: {type: GraphQLInt},
                 match_type: {type: GraphQLString},
                 modified_at: {type: GraphQLString},
                 name: {type: GraphQLString},
@@ -574,17 +545,17 @@ const Mutation = new GraphQLObjectType({
                 original_scheduled_at: {type: GraphQLString},
                 rescheduled: {type: GraphQLBoolean},
                 scheduled_at: {type: GraphQLString},
-                serie_id: {type: new GraphQLNonNull(GraphQLInt)},
+                serie_id: {type: GraphQLInt},
                 slug: {type: GraphQLString},
                 status: {type: GraphQLString},
-                tournament_id: {type: new GraphQLNonNull(GraphQLInt)},
+                tournament_id: {type: GraphQLInt},
                 videogame_version: {type: InputVideogameversionType},
                 winner: {type: InputWinnerType},
                 winner_id: {type: GraphQLInt},
                 games: {type: new GraphQLList(InputGamesType)},
-                league: {type: new GraphQLNonNull(InputLeagueResultType)},
-                serie: {type: new GraphQLNonNull(InputSerieType)},
-                tournament: {type: new GraphQLNonNull(InputTournamentType)},
+                league: {type: InputLeagueResultType},
+                serie: {type: InputSerieType},
+                tournament: {type: InputTournamentType},
                 videogame: {type: new GraphQLNonNull(InputVideogameType)},
                 opponents: {type: new GraphQLList(InputOpponentsType)}
             },
@@ -592,27 +563,19 @@ const Mutation = new GraphQLObjectType({
                 try {
                     await authController.checkAuth(req, res);
                     const game = args.videogame.name.toLowerCase();
-                    const filter = {id: args.id};
+                    let newMatch;
                     if (game.includes('lol')) {
-                        return await league.findOneAndUpdate(filter, args, {
-                            new: true,
-                            upsert: true
-                        });
+                        newMatch = new league(args);
+                        return await newMatch.save();
                     } else if (game.includes('dota 2')) {
-                        return await dota.findOneAndUpdate(filter, args, {
-                            new: true,
-                            upsert: true
-                        });
+                        newMatch = new dota(args);
+                        return await newMatch.save();
                     } else if (game.includes('cs:go')) {
-                        return await csgo.findOneAndUpdate(filter, args, {
-                            new: true,
-                            upsert: true
-                        });
+                        newMatch = new csgo(args);
+                        return await newMatch.save();
                     } else if (game.includes('overwatch')) {
-                        return await ow.findOneAndUpdate(filter, args, {
-                            new: true,
-                            upsert: true
-                        });
+                        newMatch = new ow(args);
+                        return await newMatch.save();
                     } else {
                         throw new Error('Bad videogame category');
                     }
@@ -774,6 +737,54 @@ const Mutation = new GraphQLObjectType({
         }
     })
 });
+
+// this is black magic
+const modifyGames = (doc) => {
+    let newHomeId;
+    let newAwayId;
+    let oldHomeId;
+    let oldAwayId;
+    if (doc.opponents.length > 0) {
+        newHomeId = doc.opponents[0].opponent.id;
+    }
+    if (doc.opponents.length > 1) {
+        newAwayId = doc.opponents[1].opponent.id;
+    }
+    if (doc.found.opponents.length > 0) {
+        oldHomeId = doc.found.opponents[0].opponent.id;
+    } else {
+        doc.found.opponents[0] = doc.opponents[0];
+    }
+    if (doc.found.opponents.length > 1) {
+        oldAwayId = doc.found.opponents[1].opponent.id;
+    } else {
+        doc.found.opponents[1] = doc.opponents[1];
+    }
+
+    if (doc.opponents && doc.found.games) {
+        for (let i = 0; i < doc.found.games.length; i++) {
+            if (doc.found.games[i].winner.id) {
+                if (doc.found.games[i].winner.id === oldHomeId) {
+                    doc.found.games[i].winner.id = newHomeId;
+                }
+                if (doc.found.games[i].winner.id === oldAwayId) {
+                    doc.found.games[i].winner.id = newAwayId;
+                }
+            }
+        }
+    }
+
+    try {
+        doc.found.opponents[0].opponent.id = doc.opponents[0].opponent.id;
+        doc.found.opponents[0].opponent.name = doc.opponents[0].opponent.name;
+        doc.found.opponents[1].opponent.id = doc.opponents[1].opponent.id;
+        doc.found.opponents[1].opponent.name = doc.opponents[1].opponent.name;
+        doc.found.name = doc.name;
+    } catch (err) {
+        console.log(err);
+    }
+    return doc.found;
+};
 
 module.exports = new GraphQLSchema({
     query: RootQuery,

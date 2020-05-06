@@ -1,5 +1,3 @@
-let xmlhttp = new XMLHttpRequest();
-let url = 'https://env-3595870.jelastic.metropolia.fi/';
 let data = [];
 
 const gameList = document.getElementById('games');
@@ -11,48 +9,17 @@ const awayId = document.getElementById('opponentawayid');
 const matchName = document.getElementById('matchname');
 const submitBtn = document.getElementById('submitbtn');
 const deleteBtn = document.getElementById('deletebtn');
+const addBtn = document.getElementById('submitbtnadd');
+const matchIdAdd = document.getElementById('matchidadd');
+const matchNameAdd = document.getElementById('matchnameadd');
+const homeNameAdd = document.getElementById('opponenthomenameadd');
+const homeIdAdd = document.getElementById('opponenthomeidadd');
+const awayNameAdd = document.getElementById('opponentawaynameadd');
+const awayIdAdd = document.getElementById('opponentawayidadd');
 
-
-const lolQuery = {
-    query: `
-{
-  leaguematches {
-    id
-    begin_at
-    opponents {
-      opponent {
-        name
-        id
-      }
-    }
-    videogame {
-      name
-    }
-    winner_id
-    games {
-      winner {
-        id
-      }
-    }
-    name
-  }
-}
-    `
+const clearList = () => {
+    document.querySelectorAll('#matchids option').forEach(option => option.remove());
 };
-
-xmlhttp.onreadystatechange = () => {
-    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        const resp = JSON.parse(xmlhttp.responseText);
-        data = resp.data.leaguematches;
-        data.sort((a, b) => {
-            return a.id - b.id;
-        });
-        populateFields(data);
-    }
-};
-xmlhttp.open('POST', url + 'graphql', true);
-xmlhttp.setRequestHeader('Content-Type', 'application/json');
-xmlhttp.send(JSON.stringify(lolQuery));
 
 const populateFields = (data) => {
     for (let i = 0; i < data.length; i++) {
@@ -77,45 +44,35 @@ const populateFields = (data) => {
     }
 };
 
-gameList.addEventListener('change', () => {
-    const index = gameList.options.selectedIndex;
-    if (index === 0) {
-        showLeagueResults();
-    } else if (index === 1) {
-        showDotaResults();
-    } else if (index === 2) {
-        showCsResults();
-    } else if (index === 3) {
-        showOwResults();
-    }
-});
-
-matchIdList.addEventListener('change', () => {
-    matchName.value = data[matchIdList.options.selectedIndex].name;
-    if (data[matchIdList.options.selectedIndex].opponents.length > 0 && data[matchIdList.options.selectedIndex].opponents[0].opponent) {
-        homeName.value = data[matchIdList.options.selectedIndex].opponents[0].opponent.name;
-        homeId.value = data[matchIdList.options.selectedIndex].opponents[0].opponent.id;
-    } else {
-        homeName.value = '';
-        homeId.value = '';
-    }
-    if (data[matchIdList.options.selectedIndex].opponents.length > 1 && data[matchIdList.options.selectedIndex].opponents[1].opponent) {
-        awayName.value = data[matchIdList.options.selectedIndex].opponents[1].opponent.name;
-        awayId.value = data[matchIdList.options.selectedIndex].opponents[1].opponent.id;
-    } else {
-        awayName.value = '';
-        awayId.value = '';
-    }
-});
-
 const showLeagueResults = async () => {
     clearList();
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(lolQuery)
-    });
-    const leagueData = await resp.json();
+    const lolQuery = {
+        query: `
+{
+  leaguematches {
+    id
+    begin_at
+    opponents {
+      opponent {
+        name
+        id
+      }
+    }
+    videogame {
+      name
+    }
+    winner_id
+    games {
+      winner {
+        id
+      }
+    }
+    name
+  }
+}
+    `
+    };
+    const leagueData = await makeAQuery(lolQuery);
     data = leagueData.data.leaguematches;
     data.sort((a, b) => {
         return a.id - b.id;
@@ -151,12 +108,7 @@ const showDotaResults = async () => {
 }
     `
     };
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(dotaQuery)
-    });
-    const dotaData = await resp.json();
+    const dotaData = await makeAQuery(dotaQuery);
     data = dotaData.data.dotamatches;
     data.sort((a, b) => {
         return a.id - b.id;
@@ -192,12 +144,7 @@ const showCsResults = async () => {
 }
     `
     };
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(csgoQuery)
-    });
-    const csData = await resp.json();
+    const csData = await makeAQuery(csgoQuery);
     data = csData.data.csgomatches;
     data.sort((a, b) => {
         return a.id - b.id;
@@ -233,12 +180,7 @@ const showOwResults = async () => {
 }
     `
     };
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(owQuery)
-    });
-    const owData = await resp.json();
+    const owData = await makeAQuery(owQuery);
     data = owData.data.owmatches;
     data.sort((a, b) => {
         return a.id - b.id;
@@ -246,8 +188,54 @@ const showOwResults = async () => {
     populateFields(data);
 };
 
+if (gameList.options.selectedIndex === 0) {
+    showLeagueResults();
+} else if (gameList.options.selectedIndex === 1) {
+    showDotaResults();
+} else if (gameList.options.selectedIndex === 2) {
+    showCsResults();
+} else if (gameList.options.selectedIndex === 3) {
+    showOwResults();
+}
+
+matchIdList.addEventListener('change', () => {
+    matchName.value = data[matchIdList.options.selectedIndex].name;
+    if (data[matchIdList.options.selectedIndex].opponents.length > 0 && data[matchIdList.options.selectedIndex].opponents[0].opponent) {
+        homeName.value = data[matchIdList.options.selectedIndex].opponents[0].opponent.name;
+        homeId.value = data[matchIdList.options.selectedIndex].opponents[0].opponent.id;
+    } else {
+        homeName.value = '';
+        homeId.value = '';
+    }
+    if (data[matchIdList.options.selectedIndex].opponents.length > 1 && data[matchIdList.options.selectedIndex].opponents[1].opponent) {
+        awayName.value = data[matchIdList.options.selectedIndex].opponents[1].opponent.name;
+        awayId.value = data[matchIdList.options.selectedIndex].opponents[1].opponent.id;
+    } else {
+        awayName.value = '';
+        awayId.value = '';
+    }
+});
+
+gameList.addEventListener('change', () => {
+    const index = gameList.options.selectedIndex;
+    if (index === 0) {
+        showLeagueResults();
+    } else if (index === 1) {
+        showDotaResults();
+    } else if (index === 2) {
+        showCsResults();
+    } else if (index === 3) {
+        showOwResults();
+    }
+});
+
 const submitFormModify = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (token === null) {
+        alert('Log in first');
+        return;
+    }
     const game = gameList.value;
     const matchid = parseInt(matchIdList.value);
     const mName = matchName.value;
@@ -289,20 +277,21 @@ const submitFormModify = async (e) => {
         `
     };
 
-
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')},
-        body: JSON.stringify(modifyQuery)
-    });
-    const respJson = await resp.json();
-    data[matchIdList.options.selectedIndex] = respJson.data.modifyMatch;
-
+    const resp = await makeATokenQuery(modifyQuery);
+    if (resp.errors) {
+        alert('Something went wrong.');
+        return;
+    }
+    data[matchIdList.options.selectedIndex] = resp.data.modifyMatch;
 };
 
 const submitFormDelete = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (token === null) {
+        alert('Log in first');
+        return;
+    }
     const game = gameList.value;
     const matchid = parseInt(matchIdList.value);
 
@@ -316,24 +305,58 @@ const submitFormDelete = async (e) => {
         `
     };
 
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')},
-        body: JSON.stringify(deleteQuery)
-    });
-    //const respJson = await resp.json();
+    const resp = await makeATokenQuery(deleteQuery);
+    if (resp.errors) {
+        alert('Something went wrong.');
+        return;
+    }
     data.splice(matchIdList.options.selectedIndex, 1);
     await clearList();
     populateFields(data);
 };
 
-const clearList = () => {
-    document.querySelectorAll('#matchids option').forEach(option => option.remove());
+const submitFormAdd = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (token === null) {
+        alert('Log in first');
+        return;
+    }
+    const game = document.getElementById('gamesadd').value;
+    const matchid = parseInt(matchIdAdd.value);
+    const mName = matchNameAdd.value;
+    const hName = homeNameAdd.value;
+    const hId = parseInt(homeIdAdd.value);
+    const aName = awayNameAdd.value;
+    const aId = parseInt(awayIdAdd.value);
+
+    if (!matchid || !mName || !hName || !hId || !aName || !aId) {
+        alert('Check fields');
+        return;
+    }
+
+    const addQuery = {
+        query: `
+        mutation {
+            addMatch(id: ${matchid}, name:"${mName}", opponents: [{opponent:{id:${hId},name:"${hName}"}}, 
+        {opponent:{id:${aId}, name:"${aName}"}}],
+        videogame: {name:"${game}"}) {
+        id
+        }
+    }
+        `
+    };
+    const resp = await makeATokenQuery(addQuery);
+    if (resp.errors) {
+        alert('Match id already found in database');
+        return;
+    }
+    showLeagueResults();
 };
 
-submitBtn.addEventListener("click", submitFormModify);
-deleteBtn.addEventListener("click", submitFormDelete);
+submitBtn.addEventListener('click', submitFormModify);
+deleteBtn.addEventListener('click', submitFormDelete);
+addBtn.addEventListener('click', submitFormAdd);
 
 
 

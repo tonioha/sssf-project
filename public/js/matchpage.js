@@ -1,7 +1,6 @@
 'use strict';
 
-const url = location.pathname;
-const qUrl = 'https://env-3595870.jelastic.metropolia.fi/graphql';
+const windowUrl = location.pathname;
 const home = document.querySelector('.home');
 const away = document.querySelector('.away');
 const homepic = document.querySelector('.homepic');
@@ -12,8 +11,9 @@ const date = document.querySelector('.date');
 const splitUrl = location.pathname.split('/');
 const matchId = splitUrl[splitUrl.length-1];
 
-const lolQuery = {
-    query: `
+const showLeagueResults = async () => {
+    const lolQuery = {
+        query: `
 {
   leaguematch(id: ${matchId}) {
     id
@@ -37,10 +37,14 @@ const lolQuery = {
   }
 }
     `
+    };
+    const leagueData = await makeAQuery(lolQuery);
+    showResult(leagueData.data.leaguematch);
 };
 
-const dotaQuery = {
-    query: `
+const showDotaResults = async () => {
+    const dotaQuery = {
+        query: `
 {
   dotamatch(id: ${matchId}) {
     id
@@ -64,9 +68,13 @@ const dotaQuery = {
   }
 }
     `};
+    const dotaData = await makeAQuery(dotaQuery);
+    showResult(dotaData.data.dotamatch);
+};
 
-const csgoQuery = {
-    query: `
+const showCsResults = async () => {
+    const csgoQuery = {
+        query: `
 {
   csgomatch(id: ${matchId}) {
     id
@@ -90,9 +98,13 @@ const csgoQuery = {
   }
 }
     `};
+    const csData = await makeAQuery(csgoQuery);
+    showResult(csData.data.csgomatch);
+};
 
-const owQuery = {
-    query: `
+const showOwResults = async () => {
+    const owQuery = {
+        query: `
 {
   owmatch(id: ${matchId}) {
     id
@@ -116,54 +128,17 @@ const owQuery = {
   }
 }
     `};
-
-const showLeagueResults = async () => {
-    const resp = await fetch(qUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(lolQuery)
-    });
-    const leagueData = await resp.json();
-    showResult(leagueData.data.leaguematch);
-};
-
-const showDotaResults = async () => {
-    const resp = await fetch(qUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(dotaQuery)
-    });
-    const dotaData = await resp.json();
-    showResult(dotaData.data.dotamatch);
-};
-
-const showCsResults = async () => {
-    const resp = await fetch(qUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(csgoQuery)
-    });
-    const csData = await resp.json();
-    showResult(csData.data.csgomatch);
-};
-
-const showOwResults = async () => {
-    const resp = await fetch(qUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(owQuery)
-    });
-    const owData = await resp.json();
+    const owData = await makeAQuery(owQuery);
     showResult(owData.data.owmatch);
 };
 
-if (url.includes('lol')) {
+if (windowUrl.includes('lol')) {
     showLeagueResults();
-} else if (url.includes('dota')) {
+} else if (windowUrl.includes('dota')) {
     showDotaResults();
-} else if (url.includes('csgo')) {
+} else if (windowUrl.includes('csgo')) {
     showCsResults();
-} else if (url.includes('ow')) {
+} else if (windowUrl.includes('ow')) {
     showOwResults();
 }
 

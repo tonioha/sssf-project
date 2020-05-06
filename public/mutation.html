@@ -10,6 +10,32 @@
 <body>
 
 <div class="main">
+    <p>Add</p>
+    <form id="addform">
+        <label for="gamesadd">Game:</label><br>
+        <select id="gamesadd" name="gameaddlist" form="addform">
+            <option value="lol">League</option>
+            <option value="dota 2">Dota2</option>
+            <option value="cs:go">CS:GO</option>
+            <option value="overwatch">Overwatch</option>
+        </select>
+        <br>
+        <label for="matchidadd">Match id:</label><br>
+        <input type="text" id="matchidadd" name="matchidadd" value=""><br>
+        </select>
+        <label for="matchnameadd">Match name:</label><br>
+        <input type="text" id="matchnameadd" name="matchname" value=""><br>
+        <label for="opponenthomenameadd">Home opponent name:</label><br>
+        <input type="text" id="opponenthomenameadd" name="opponenthomename" value=""><br>
+        <label for="opponenthomeidadd">Home opponent id:</label><br>
+        <input type="text" id="opponenthomeidadd" name="opponenthomeid" value=""><br>
+        <label for="opponentawaynameadd">Away opponent name:</label><br>
+        <input type="text" id="opponentawaynameadd" name="opponentawayname" value=""><br>
+        <label for="opponentawayidadd">Away opponent id:</label><br>
+        <input type="text" id="opponentawayidadd" name="opponentawayid" value=""><br>
+        <input id="submitbtnadd" type="submit" value="Add">
+    </form>
+    <p>Modify/Delete</p>
 <form id="editform">
     <label for="games">Game:</label><br>
     <select id="games" name="gamelist" form="editform">
@@ -36,8 +62,10 @@
     <input id="submitbtn" type="submit" value="Modify">
     <input id="deletebtn" type="submit" value="Delete">
 </form>
+
 </div>
 
 </body>
+<script src="/../js/queryhelper.js"></script>
 <script src="/../js/mutation.js"></script>
 </html>

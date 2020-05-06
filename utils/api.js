@@ -54,9 +54,6 @@ const queryLeagueMatches = async () => {
     const URL = `${LEAGUE_BASE_URL}matches/?token=${API_KEY}`;
     await axios.get(URL)
         .then(res => {
-            //console.log('res data: ', res.data);
-            //console.log('res: ', res);
-            //data.push(res.data);
             saveLeagueResultsToDb(res.data);
         })
         .catch(err => {
@@ -99,12 +96,10 @@ const queryOwMatches = async () => {
 };
 
 const saveDotaResultsToDb = async (data) => {
-    // console.log('winner', data[0][46].winner);
     console.log('here dota');
     const dotaresults = await Promise.all(data.map(async rslt => {
         let newDresult = new dotaResult(rslt);
         const filter = {id: newDresult.id};
-        // console.log('newDresult id: ', newDresult.id);
         const savedResult = await dotaResult.findOneAndUpdate(filter, rslt, {
             new: true,
             upsert: true
@@ -112,8 +107,6 @@ const saveDotaResultsToDb = async (data) => {
         console.log(`Succesfully added result to db with id: ${savedResult._id}`)
     }));
     console.log('length ', dotaresults.length);
-    //const dotarslt = await dotaResult.create(data[0][0]);
-    //console.log(`Succesfully added result to db with id: ${dotarslt._id}`);
 };
 
 const saveLeagueResultsToDb = async (data) => {

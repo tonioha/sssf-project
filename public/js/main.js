@@ -1,39 +1,14 @@
 'use strict';
 
-let data = [];
-let xmlhttp = new XMLHttpRequest();
-let url = 'https://env-3595870.jelastic.metropolia.fi/';
+let wLocation = window.location.href;
 let main = document.getElementById('matchgrid');
-const lolQuery = {
-    query: `
-{
-  leaguematches {
-    id
-    begin_at
-    opponents {
-      opponent {
-        name
-      }
-    }
-    videogame {
-      name
-    }
-  }
-}
-    `
-};
+const qBtn = document.getElementById('querybutton');
 
-
-xmlhttp.onreadystatechange = () => {
-    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        data = JSON.parse(xmlhttp.responseText);
-        displayResults(data.data.leaguematches);
+const clearMatches = () => {
+    while (main.firstChild) {
+        main.firstChild.remove();
     }
 };
-xmlhttp.open('POST', url + 'graphql', true);
-xmlhttp.setRequestHeader('Content-Type', 'application/json');
-xmlhttp.send(JSON.stringify(lolQuery));
-
 
 const displayResults = (data) => {
     for (let i = 0; i < data.length; i++) {
@@ -62,30 +37,37 @@ const showDetailed = async (e) => {
     const id = parseInt(e.attributes.id.value);
 
     if (game.includes('lol')) {
-        window.open(`${url}lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${wLocation}lol/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('dota 2')) {
-        window.open(`${url}dota/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${wLocation}dota/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('cs:go')) {
-        window.open(`${url}csgo/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
+        window.open(`${wLocation}csgo/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     } else if (game.includes('overwatch')) {
-        window.open(`${url}ow/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
-    }
-};
-
-const clearMatches = () => {
-    while (main.firstChild) {
-        main.firstChild.remove();
+        window.open(`${wLocation}ow/match/${id}`, '_blank', 'toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=500');
     }
 };
 
 const showLeagueResults = async () => {
     clearMatches();
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(lolQuery)
-    });
-    const leagueData = await resp.json();
+    const lolQuery = {
+        query: `
+{
+  leaguematches {
+    id
+    begin_at
+    opponents {
+      opponent {
+        name
+      }
+    }
+    videogame {
+      name
+    }
+  }
+}
+    `
+    };
+    const leagueData = await makeAQuery(lolQuery);
     displayResults(leagueData.data.leaguematches);
 };
 
@@ -108,12 +90,7 @@ const showDotaResults = async () => {
         }
     }
     `};
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(dotaQuery)
-    });
-    const dotaData = await resp.json();
+    const dotaData = await makeAQuery(dotaQuery);
     displayResults(dotaData.data.dotamatches);
 };
 
@@ -136,12 +113,7 @@ const showCsResults = async () => {
         }
     }
     `};
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(csgoQuery)
-    });
-    const csData = await resp.json();
+    const csData = await makeAQuery(csgoQuery);
     displayResults(csData.data.csgomatches);
 };
 
@@ -164,19 +136,21 @@ const showOwResults = async () => {
         }
     }
     `};
-    const resp = await fetch(url + 'graphql', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(owQuery)
-    });
-    const owData = await resp.json();
+    const owData = await makeAQuery(owQuery);
     displayResults(owData.data.owmatches);
 };
+
+showLeagueResults();
+
+qBtn.addEventListener('click', () => {
+    window.open(`${wLocation}mutation.html`);
+});
 
 window.onload = () => {
     const token = localStorage.getItem('token');
     if (token !== null) {
         document.getElementById('loginbutton').style.display = 'none';
+        document.getElementById('querybutton').style.display = 'inline-block';
     }
 };
 
