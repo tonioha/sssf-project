@@ -4,7 +4,7 @@ Project repository for Server-side Scripting Frameworks course
 ## Project description
 Simple website where one can see results from League of Legends, Dota2, CS:GO or Overwatch matches.<br/>
 Data comes from https://api.pandascore.co <br/>
-When data is fetched, it is then saved to database and the results are shown in the front-end by using GraphQL queries.
+When data is fetched, it is then saved to database and the results are shown in the front-end by using GraphQL queries.<br/>
 Thanks for https://www.w3schools.com/ for html and css templates.
 
 ## Installing
